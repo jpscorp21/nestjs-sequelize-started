@@ -1,0 +1,41 @@
+{
+    "development": {
+        "username": "postgres",
+        "password": "",
+        "database": "",
+        "host": "127.0.0.1",
+        "dialect": "postgres",
+        "port": 5432,
+        "define": {
+            "timestamp": true,
+            "freezeTableName": true
+        },
+        "timezone": "America/Asuncion"
+    },
+    "test": {
+        "username": "postgres",
+        "password": "",
+        "database": "",
+        "host": "127.0.0.1",
+        "dialect": "postgres",
+        "port": 5432,
+        "define": {
+            "timestamp": true,
+            "freezeTableName": true
+        },
+        "timezone": "America/Asuncion"
+    },
+    "production": {
+        "username": "postgres",
+        "password": "",
+        "database": "",
+        "host": "127.0.0.1",
+        "dialect": "postgres",
+        "port": 5432,
+        "define": {
+            "timestamp": true,
+            "freezeTableName": true
+        },
+        "timezone": "America/Asuncion"
+    }
+}
