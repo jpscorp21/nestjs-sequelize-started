@@ -1,7 +1,10 @@
-import { Controller, Get, Param, Post, Body, Delete, Put, UsePipes } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Delete, Put, UsePipes, ValidationPipe, ParseIntPipe } from '@nestjs/common';
 import { ProductosService } from './productos.service';
 import { Productos } from './dto/productos.dto';
-import { ValidationPipe } from '../../pipes/validation.pipe';
+import { ProductosModel } from '../../models/productos.model';
+import { ExistsDataPipe } from '../../pipes/exists-data.pipe';
+import { JoiValidationPipe } from './../../pipes/joi-validation.pipe';
+import { ProductosSchema } from '../../schemas/productos.schemas';
 
 @Controller('productos')
 export class ProductosController {
@@ -24,9 +27,9 @@ export class ProductosController {
      * @param id - Para la consulta
      */
     @Get('/:id')
-    findById(@Param('id') id: string) {
-        const data: Productos = new Productos();
-        return this._productos.findById(Number(id));
+    @UsePipes(new ExistsDataPipe(ProductosModel))
+    findById(@Param('id', new ParseIntPipe()) id) {
+        return this._productos.findById(id);
     }
 
     /**
@@ -36,7 +39,7 @@ export class ProductosController {
      * @returns Los resultados de la informacion creada
      */
     @Post('/')
-    @UsePipes(ValidationPipe)
+    @UsePipes(new JoiValidationPipe(ProductosSchema))
     create(@Body() data: Productos) {
         return this._productos.create(data);
     }
@@ -49,8 +52,13 @@ export class ProductosController {
      * @returns Los resultados de la actualizacion de productos
      */
     @Put('/:id')
-    update(@Body() data: any, @Param('id') id: string) {
-        return this._productos.update(data, Number(id));
+    @UsePipes(new JoiValidationPipe(ProductosSchema))
+    async update(
+        @Body() data: Productos,
+        @Param('id', new ParseIntPipe(), new ExistsDataPipe(ProductosModel)) id: number,
+    ) {
+        await this._productos.update(data, id);
+        return id;
     }
 
     /**
@@ -60,7 +68,8 @@ export class ProductosController {
      * @returns Resultado tras eliminar un producto
      */
     @Delete('/:id')
-    async destroy(@Param('id') id: string) {
+    async destroy(
+        @Param('id', new ParseIntPipe(), new ExistsDataPipe(ProductosModel)) id: string) {
         await this._productos.destroy(Number(id));
         return id;
     }
